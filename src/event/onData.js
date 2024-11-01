@@ -5,6 +5,7 @@ import {
 } from "../constants/header.js";
 import { getHandlerById } from "../handler/index.js";
 import { packetParser } from "../utils/parser/packetParser.js";
+import { getProtoMessages } from "../init/loadProto.js";
 
 export const onData = (socket) => (data) => {
   // 기존에 있던거에 더해준다.
@@ -22,6 +23,19 @@ export const onData = (socket) => (data) => {
       socket.buffer = socket.buffer.subarray(length);
       try {
         switch (packetType) {
+            case PACKET_TYPE.PING:
+            {
+              const protoMessages = getProtoMessages();
+              const Ping = protoMessages.common.Ping;
+              const pingMessage = Ping.decode(packet);
+              const user = getUserBySocket(socket);
+              
+              if(!user){
+                throw Error();
+              }
+              user.handlePong(pingMessage);
+            }
+            break;
           case PACKET_TYPE.NORMAL: {
             // 패킷 파서 추가 예정
             const { handlerId, userId, payload } = packetParser(packet);
