@@ -6,6 +6,7 @@ import {
 import { getHandlerById } from "../handler/index.js";
 import { packetParser } from "../utils/parser/packetParser.js";
 import { getProtoMessages } from "../init/loadProto.js";
+import { getUserBySocket } from "../sessions/user.session.js";
 
 // 데이터 스트림으로 서버와 클라이언트가 데이터를 주고 받음.
 export const onData = (socket) => (data) => {
@@ -36,13 +37,12 @@ export const onData = (socket) => (data) => {
             {
               const protoMessages = getProtoMessages();
               const Ping = protoMessages.common.Ping;
-              const pingMessage = Ping.decode(packet);
+              const pingPacket = Ping.decode(packet);
               const user = getUserBySocket(socket);
-
+              user.handlePong(pingPacket);
               if (!user) {
                 throw Error();
               }
-              user.handlePong(pingMessage);
             }
             break;
           case PACKET_TYPE.NORMAL: {

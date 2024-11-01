@@ -26,15 +26,18 @@ class User {
     this.updateTimeUpdate();
   }
 
+  // ping 패킷을 보내는곳
   ping() {
     const now = Date.now();
 
     this.socket.write(createPingPacket(now));
   }
 
+  // ping 패킷을 받는곳
   handlePong(data) {
     const now = Date.now();
     this.latency = (now - data.timestamp) / 2;
+    console.log(`${this.id} : ${this.latency}ms`);
   }
 
   calculatePosition(latency) {
@@ -49,7 +52,7 @@ class User {
     const timeDiff = (Date.now() - this.lastUpdateTime + latency) / 1000; // 1초
 
     const distance = this.speed * timeDiff;
-    
+
     const directionX =
       this.x !== this.lastX ? Math.sign(this.x - this.lastX) : 0;
     const directionY =
