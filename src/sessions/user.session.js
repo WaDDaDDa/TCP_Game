@@ -11,7 +11,6 @@ export const removeUser = async (socket) => {
   if (index !== -1) {
     const user = userSessions[index];
     await updateUserLocation(user.x, user.y, user.id);
-    console.log("Users에서 유저삭제");
     return userSessions.splice(index, 1)[0];
   }
 };

@@ -26,14 +26,12 @@ class Game {
 
   removeUser(socket) {
     const index = this.users.findIndex((user) => user.socket === socket);
-    console.log("게임에서 유저 삭제1");
     
     if (index !== -1) {
       if (this.users.length === 1) {
         this.latencyManager.clearAll();
       }
       this.latencyManager.removeUser(this.users[index].id);
-      console.log("게임에서 유저 삭제");
       return this.users.splice(index, 1)[0];
     }
   }
